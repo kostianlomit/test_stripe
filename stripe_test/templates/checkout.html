@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item Page</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <h1>Item Details</h1>
+    <p>Item Name: {{ item.name }}</p>
+    <p>Item Price: {{ item.price }}</p>
+    <button onclick="buyItem({{ item.id }})">Buy</button>
+
+    <script>
+      function buyItem(itemId) {
+
+        // Отправка запроса на /buy/{id}
+        fetch(`/buy/${itemId}`)
+          .then(response => response.json())
+          .then(data => {
+
+            // Получение session_id
+            const sessionId = data.session_id;
+
+            // Редирект на Checkout
+            const stripe = Stripe('your_stripe_public_key');
+            stripe.redirectToCheckout({
+              sessionId: sessionId
+            });
+          });
+      }
+    </script>
+</body>
+</html>
